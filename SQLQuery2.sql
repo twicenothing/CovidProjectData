@@ -70,3 +70,24 @@ FROM Portfolioproject..CovidDeaths dea
 INNER JOIN Portfolioproject..CovidVaccinations vac
 ON dea.location = vac.location
 and dea.date = vac.date
+
+
+
+SELECT SUM(CONVERT(float, new_cases)) as total_cases, SUM(CONVERT(float, new_deaths )) as total_deaths, SUM(CONVERT(float, new_deaths ))/SUM(CONVERT(float, new_cases))* 100 as death_percentage
+FROM Portfolioproject..CovidDeaths
+where continent is not null
+order by 1,2
+
+
+-- This query basically only removes international and world and european uniion since it's part of europe for more correct continent specific data
+SELECT location, SUM(CONVERT(float, new_deaths)) as total_deaths
+FROM Portfolioproject..CovidDeaths
+where location  in (  'Europe', 'North America', 'Asia', 'South America', 'Africa', 'Oceania')
+Group by location
+order by total_deaths desc
+
+
+SELECT Location, population, date, MAX(CONVERT(float, total_cases)) as max_cases,MAX(CONVERT(float, total_cases))/(CONVERT(float, population))*100 as percent_population_infected
+FROM Portfolioproject..CovidDeaths
+Group by location, population,date
+order by percent_population_infected desc
